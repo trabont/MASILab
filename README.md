@@ -7,11 +7,11 @@ As the data has already been run, this file also includes documentation of outpu
 Data Location: 
 ------------------------
 Data can be found in and will run from: nfs/masi/trabont/Lymph (henceforth referred to as BaseDir)
-- KEY:  
-    '*'   = WM, GM, LYMPH, CSF
-    '**'  = PSR, kba, T2b, T2R1
-    '#'   = subject id folder(s)
-    '##'  = files of various names identifiable with subject id number
+- KEY:
+-     '*'   = WM, GM, LYMPH, CSF
+-     '**'  = PSR, kba, T2b, T2R1
+-     '#'   = subject id folder(s)
+-     '##'  = files of various names identifiable with subject id number
 
 Within BaseDir, the following files and folders should exist:
 '/PreProcessed'
