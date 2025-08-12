@@ -1,0 +1,93 @@
+clear; clc;
+
+% === USER SETTINGS ===
+baseDir    = fullfile(pwd,'Processed','MS');        % where subject folders live
+upload     = fullfile(pwd,'Processed','MS');
+saveRoot   = fullfile(pwd,'Processed','FullFit_MS');   % where outputs go
+
+file_checking(baseDir, saveRoot);
+
+% find all subject folders
+d       = dir(upload);
+isSubj  = [d.isdir] & ~ismember({d.name},{'.','..'});
+subjList= {d(isSubj).name};
+
+xlsx = fullfile(saveRoot,'FILE_CHECK.xlsx');
+% Read both sheets if present
+T = table();
+sn = sheetnames(xlsx);
+if any(strcmpi(sn,'DIMS_SCT')),  T = [T; readtable(xlsx,'Sheet','DIMS_SCT')];  end
+if any(strcmpi(sn,'DIMS_ANTS')), T = [T; readtable(xlsx,'Sheet','DIMS_ANTS')]; end
+
+% Treat dims as strings so "NA" is testable regardless of import type
+X = string(T.X); Y = string(T.Y); Z = string(T.Z); TT = string(T.T);
+missing = (X=="NA") | (Y=="NA") | (Z=="NA") | (TT=="NA");
+
+% Unique IDs to exclude (as a cell array of char)
+excludeIDs = cellstr(unique(string(T.ID(missing))))';
+
+for ii = 1:numel(subjList)
+    fileID = subjList{ii};
+    
+    % skip excluded IDs
+    if any(strcmp(fileID, excludeIDs))
+        fprintf('Skipping subject %s\n', fileID);
+        continue;
+    end
+    
+    id = str2double(fileID);
+    subjDir = fullfile(baseDir, fileID);
+    saveDir = fullfile(saveRoot, fileID);
+    if ~exist(saveDir,'dir')
+        mkdir(saveDir);
+    end
+    
+    med_dice_centr(baseDir, saveRoot, id);
+end
+
+clear; clc;
+
+% === USER SETTINGS ===
+baseDir    = fullfile(pwd,'Processed','HC');        % where subject folders live
+upload     = fullfile(pwd,'Processed','HC');
+saveRoot   = fullfile(pwd,'Processed','FullFit_HC');   % where outputs go
+
+file_checking(baseDir, saveRoot);
+
+% find all subject folders
+d       = dir(upload);
+isSubj  = [d.isdir] & ~ismember({d.name},{'.','..'});
+subjList= {d(isSubj).name};
+
+xlsx = fullfile(saveRoot,'FILE_CHECK.xlsx');
+% Read both sheets if present
+T = table();
+sn = sheetnames(xlsx);
+if any(strcmpi(sn,'DIMS_SCT')),  T = [T; readtable(xlsx,'Sheet','DIMS_SCT')];  end
+if any(strcmpi(sn,'DIMS_ANTS')), T = [T; readtable(xlsx,'Sheet','DIMS_ANTS')]; end
+
+% Treat dims as strings so "NA" is testable regardless of import type
+X = string(T.X); Y = string(T.Y); Z = string(T.Z); TT = string(T.T);
+missing = (X=="NA") | (Y=="NA") | (Z=="NA") | (TT=="NA");
+
+% Unique IDs to exclude (as a cell array of char)
+excludeIDs = cellstr(unique(string(T.ID(missing))))';
+
+for ii = 1:numel(subjList)
+    fileID = subjList{ii};
+    
+    % skip excluded IDs
+    if any(strcmp(fileID, excludeIDs))
+        fprintf('Skipping subject %s\n', fileID);
+        continue;
+    end
+    
+    id = str2double(fileID);
+    subjDir = fullfile(baseDir, fileID);
+    saveDir = fullfile(saveRoot, fileID);
+    if ~exist(saveDir,'dir')
+        mkdir(saveDir);
+    end
+    
+    med_dice_centr(baseDir, saveRoot, id);
+end
