@@ -26,82 +26,90 @@ Data can be found in and will run from: nfs/masi/trabont/Lymph (henceforth refer
 -     '##'  = files of various names identifiable with subject id number
 
 Within BaseDir, the following files and folders should exist:
-'/PreProcessed'
-     |-- '/HC'
-           |-- '/#' 
-     |-- '/MS'
-           |-- '/#' 
-'/Processed'
-     |-- '/HC'
-           |-- '/MaskOverlays'
-           |-- '/#' 
-     |-- '/MS'
-           |-- '/MaskOverlays'
-           |-- '/#'
-     |-- '/FullFit_HC'
-           |-- 'FF_HC_all_tissue.mat'
-           |-- 'FF_HC_all_SL_*.mat'
-           |-- 'FF_HC_all_L_*.mat'
-           |-- 'FF_HC_all_G_*.mat'
-           |-- 'FF_HC_all_SL_**_MAP.png'
-           |-- 'FF_HC_all_L_**_MAP.png'
-           |-- 'FF_HC_all_G_**_MAP.png'
-           |-- '/#'
-     |-- '/FullFit_MS'
-           |-- 'FF_MS_all_tissue.mat'
-           |-- 'FF_MS_all_SL_*.mat'
-           |-- 'FF_MS_all_L_*.mat'
-           |-- 'FF_MS_all_G_*.mat'
-           |-- 'FF_MS_all_SL_**_MAP.png'
-           |-- 'FF_MS_all_L_**_MAP.png'
-           |-- 'FF_MS_all_G_**_MAP.png'
-           |-- '/#'
-     |-- '/SinglePT_HC'
-           |-- 'SP_HC_all_tissue.mat'
-           |-- 'SP_HC_all_SL_*.mat'
-           |-- 'SP_HC_all_L_*.mat'
-           |-- 'SP_HC_all_G_*.mat'
-           |-- 'SP_HC_all_SL_**_MAP.png'
-           |-- 'SP_HC_all_L_**_MAP.png'
-           |-- 'SP_HC_all_G_**_MAP.png'
-           |-- '/#'
-     |-- '/SinglePT_MS'
-           |-- 'SP_MS_all_tissue.mat'
-           |-- 'SP_MS_all_SL_*.mat'
-           |-- 'SP_MS_all_L_*.mat'
-           |-- 'SP_MS_all_G_*.mat'
-           |-- 'SP_MS_all_SL_**_MAP.png'
-           |-- 'SP_MS_all_L_**_MAP.png'
-           |-- 'SP_MS_all_G_**_MAP.png'
-           |-- '/#'
-'/functions/'
-     |-- 'yarnykh_pulseMT.m'
-     |-- 'Analysis_Yarnykh_Full_Fit.m'
-     |-- 'Analysis_Yarnykh_1pt.m'
-     |-- 'fit_SSPulseMT_yarnykh_Full_Fit.m'
-     |-- 'fit_SSPulseMT_yarnykh_1pt.m'
-     |-- 'philipsRFpulse_FA.m'
-     |-- 'CWEqMTPulse.m'
-     |-- 'absorptionLineShape.m'
-     |-- 'FullFit.m'
-     |-- 'SinglePT.m'
-     |-- 'CombineFullFitMaps.m'
-     |-- 'CombineSinglePTMaps.m'
-     |-- 'FullFit_Figures.m'
-     |-- 'SinglePT_Figures.m'
-     |-- 'FF_Excel_ROI_Analysis.m'
-     |-- 'SP_Excel_ROI_Analysis.m'
-'/MS_List.txt'
-'/HC_List.txt'
-'/sct_final_registration.sh'
-'/ants_final_registration.sh'
-'/file_check_all.m'
-'/med_dice_centr.m'
-'/file_checking.m'
-'/Loop_FF.m'
-'/Loop_1pt.m'
-'/FF_Analysis.m'
-'/SP_Analysis.m'
+/PreProcessed
+    /HC
+        /#
+    /MS
+        /#
+
+/Processed
+    /HC
+        /MaskOverlays
+        /#
+    /MS
+        /MaskOverlays
+        /#
+
+    /FullFit_HC
+        FF_HC_all_tissue.mat
+        FF_HC_all_SL_*.mat
+        FF_HC_all_L_*.mat
+        FF_HC_all_G_*.mat
+        FF_HC_all_SL_**_MAP.png
+        FF_HC_all_L_**_MAP.png
+        FF_HC_all_G_**_MAP.png
+        /#
+
+    /FullFit_MS
+        FF_MS_all_tissue.mat
+        FF_MS_all_SL_*.mat
+        FF_MS_all_L_*.mat
+        FF_MS_all_G_*.mat
+        FF_MS_all_SL_**_MAP.png
+        FF_MS_all_L_**_MAP.png
+        FF_MS_all_G_**_MAP.png
+        /#
+
+    /SinglePT_HC
+        SP_HC_all_tissue.mat
+        SP_HC_all_SL_*.mat
+        SP_HC_all_L_*.mat
+        SP_HC_all_G_*.mat
+        SP_HC_all_SL_**_MAP.png
+        SP_HC_all_L_**_MAP.png
+        SP_HC_all_G_**_MAP.png
+        /#
+
+    /SinglePT_MS
+        SP_MS_all_tissue.mat
+        SP_MS_all_SL_*.mat
+        SP_MS_all_L_*.mat
+        SP_MS_all_G_*.mat
+        SP_MS_all_SL_**_MAP.png
+        SP_MS_all_L_**_MAP.png
+        SP_MS_all_G_**_MAP.png
+        /#
+
+/functions
+    yarnykh_pulseMT.m
+    Analysis_Yarnykh_Full_Fit.m
+    Analysis_Yarnykh_1pt.m
+    fit_SSPulseMT_yarnykh_Full_Fit.m
+    fit_SSPulseMT_yarnykh_1pt.m
+    philipsRFpulse_FA.m
+    CWEqMTPulse.m
+    absorptionLineShape.m
+    FullFit.m
+    SinglePT.m
+    CombineFullFitMaps.m
+    CombineSinglePTMaps.m
+    FullFit_Figures.m
+    SinglePT_Figures.m
+    FF_Excel_ROI_Analysis.m
+    SP_Excel_ROI_Analysis.m
+
+/MS_List.txt  
+/HC_List.txt  
+/sct_final_registration.sh  
+/ants_final_registration.sh  
+/file_check_all.m  
+/med_dice_centr.m  
+/file_checking.m  
+/Loop_FF.m  
+/Loop_1pt.m  
+/FF_Analysis.m  
+/SP_Analysis.m
+
 
 ------------------------
 Data Information Detailed:
