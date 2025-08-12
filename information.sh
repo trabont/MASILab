@@ -84,12 +84,13 @@
 # '/HC_List.txt'
 # '/sct_final_registration.sh'
 # '/ants_final_registration.sh'
-# '/dice_segmentations.sh'
-# '/check_files.sh'
-# '/Loop_FF.sh'
-# '/Loop_1pt.sh'
-# '/FF_Analysis.sh'
-# '/SP_Analysis.sh'
+# '/file_check_all.m'
+# '/med_dice_centr.m'
+# '/file_checking.m'
+# '/Loop_FF.m'
+# '/Loop_1pt.m'
+# '/FF_Analysis.m'
+# '/SP_Analysis.m'
 
 # ------------------------
 # Data Information Detailed:
@@ -131,11 +132,10 @@
 # ------------------------
 # Process to Run Project from BaseDir:
 # ------------------------
-#   (1) '/sct_final_registration.sh'
-#   (2) '/ants_final_registration.sh'
-#   (3) '/dice_segmentations.sh'
-#   (4) '/check_files.sh'
-#   (5) 'Loop_FF.sh'
+#   (1) 'sct_final_registration.sh'
+#   (2) 'ants_final_registration.sh'
+#   (3) 'file_check_all.m
+#   (5) 'Loop_FF.m'
 #   (6) 'FF_Analysis.sh'
 #   (7) 'Loop_1pt.sh'
 #   (8) 'SP_Analysis.sh'
