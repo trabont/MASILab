@@ -1,7 +1,19 @@
-Trabont
-2025
-The following details the process for running this project's scripts as well as the location of data.
-As the data has already been run, this file also includes documentation of output locations.
+# Lymph Node qMT Project
+**Author:** Trabont  
+**Year:** 2025  
+
+This document describes the process for running this project's scripts, the location of data, and the structure of outputs.  
+As the data has already been processed, it also serves as documentation of output locations.
+
+---
+
+## 📂 Data Location  
+
+Data is stored in:  
+
+```bash
+nfs/masi/trabont/Lymph
+
 
 ------------------------
 Data Location: 
