@@ -80,6 +80,7 @@ registration_of_subjects() {
     dyn_ref="${id}_MT_dyn_0008.nii.gz"
     cp "$dyn_ref" "${id}_MT_dyn_0008_reg.nii.gz"
     sct_deepseg spinalcord -i "$dyn_ref" -c t2 -o "${id}_MT_dyn_0008_sc.nii.gz"
+    cp "${id}_MT_dyn_0008_sc.nii.gz" "${id}_MT_dyn_0008_reg_sc.nii.gz"
     sct_create_mask -i "$dyn_ref" -p centerline,"${id}_MT_dyn_0008_sc.nii.gz" -size 35mm -o "${id}_MT_dyn_0008_mask.nii.gz"
     sct_register_multimodal -i "${ORIENTED[MFFE]}" -d "$dyn_ref" \
         -param step=1,type=im,algo=rigid,metric=MI:step=2,type=im,algo=slicereg,metric=MI \
@@ -89,6 +90,7 @@ registration_of_subjects() {
         -owarp "${id}_warp_mFFE2MT.nii.gz" \
         -owarpinv "${id}_warp_MT2mFFE.nii.gz"
     # Register PAM50 template to mFFE space to get tissue segmentations
+    sct_deepseg spinalcord -i "${id}_registered_mFFE_1.nii.gz" -c t2 -o "${id}_registered_mFFE_1_sc.nii.gz"
     sct_deepseg spinalcord -i "${ORIENTED[MFFE]}" -c t2 -o "${id}_mFFE_sc.nii.gz"
     sct_create_mask -i "${ORIENTED[MFFE]}" -p centerline,"${id}_mFFE_sc.nii.gz" -size 35mm -o "${id}_mFFE_mask.nii.gz"
     sct_deepseg spinalcord -i "${ORIENTED[T2SAG]}" -c t2 -o "${id}_T2SAG_sc.nii.gz"
@@ -124,7 +126,8 @@ registration_of_subjects() {
         prev="$out"
     done
     fslmerge -t "${id}_registered_MT_1.nii.gz" ${id}_MT_dyn_*_reg.nii.gz
-
+    sct_deepseg spinalcord -i "${id}_MT_dyn_0000_reg.nii.gz" -c t2 -o "${id}_MT_dyn_0000_reg_sc.nii.gz"
+    
     # Register T1 and T2AX to MT
     for k in T1 T2AX; do
         sct_register_multimodal -i "${ORIENTED[$k]}" -d "$dyn_ref" \
@@ -132,6 +135,8 @@ registration_of_subjects() {
         -param step=1,type=im,algo=rigid,metric=MI:step=2,type=im,algo=slicereg,metric=MI \
         -x spline -o "${id}_registered_${k}_1.nii.gz"
     done
+    sct_deepseg spinalcord -i "${id}_registered_T2AX_1.nii.gz" -c t2 -o "${id}_registered_T2AX_1_sc.nii.gz"
+    sct_deepseg spinalcord -i "${id}_registered_T1_1.nii.gz" -c t1 -o "${id}_registered_T1_1_sc.nii.gz"
 
     # Register B0 and B1 to MT (no mask)
     for k in B0 B1; do
@@ -145,7 +150,7 @@ registration_of_subjects() {
     fslsplit "${ORIENTED[MFA]}" "${id}_MFA_dyn_" -t
     mfa_ref="${id}_MFA_dyn_0000.nii.gz"
     cp "$mfa_ref" "${id}_MFA_dyn_0000_reg.nii.gz"
-    sct_deepseg spinalcord -i "${id}_MFA_dyn_0000.nii.gz" -c t1 -o "${id}_MFA_0000_sc.nii.gz"
+    sct_deepseg spinalcord -i "${id}_MFA_dyn_0000.nii.gz" -c t1 -o "${id}_MFA_0000_sc.nii.gz
     sct_create_mask -i "$mfa_ref" -p centerline,"${id}_MFA_0000_sc.nii.gz" -size 35mm -o "${id}_MFA_dyn_0000_mask.nii.gz"
     # Co-register MFA reference and apply the same warp to all other dynamics to MT space
     sct_register_multimodal -i "$mfa_ref" -d "$dyn_ref" \
@@ -161,6 +166,7 @@ registration_of_subjects() {
         -x spline -o "$out"
         sct_apply_transfo -i "$out" -d "$dyn_ref" -w "${id}_MFA_1_warp.nii.gz" -x spline -o "${id}_MFA_dyn_${i}_in_MT.nii.gz"
     done
+    sct_deepseg spinalcord -i "${id}_MFA_dyn_0000_in_MT.nii.gz" -c t1 -o "${id}_MFA_dyn_0000_in_MT_sc.nii.gz"
     fslmerge -t "${id}_registered_MFA_1.nii.gz" ${id}_MFA_dyn_*_in_MT.nii.gz
 
     echo "Finished processing subject $id"
