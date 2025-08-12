@@ -7,7 +7,7 @@ As the data has already been run, this file also includes documentation of outpu
 Data Location: 
 ------------------------
 Data can be found in and will run from: nfs/masi/trabont/Lymph (henceforth referred to as BaseDir)
-KEY:  
+- KEY:  
     '*'   = WM, GM, LYMPH, CSF
     '**'  = PSR, kba, T2b, T2R1
     '#'   = subject id folder(s)
