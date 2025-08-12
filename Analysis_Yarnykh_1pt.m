@@ -49,7 +49,7 @@ pfit=polyfit( xval ,yval, 1);
 E1 = pfit(1);
 
 T1obs = real(-T1TR/log(E1));
-R1obs = 1/T1obs*1000; % s
+R1obs = 1/(T1obs/1000); % s
 
 % Set R1obs for ON Grant
 % R1obs = 1;
