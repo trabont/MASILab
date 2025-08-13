@@ -92,14 +92,6 @@ nfs/masi/trabont/Lymph
   philipsRFpulse_FA.m
   CWEqMTPulse.m
   absorptionLineShape.m
-  FullFit.m
-  SinglePT.m
-  CombineFullFitMaps.m
-  CombineSinglePTMaps.m
-  FullFit_Figures.m
-  SinglePT_Figures.m
-  FF_Excel_ROI_Analysis.m
-  SP_Excel_ROI_Analysis.m
 
 /MS_List.txt
 /HC_List.txt
@@ -112,6 +104,8 @@ nfs/masi/trabont/Lymph
 /Loop_1pt.m
 /FF_Analysis.m
 /SP_Analysis.m
+/fullFit.m
+/singlePTFit.m
 ```
 
 ---
