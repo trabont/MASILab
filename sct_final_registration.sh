@@ -50,9 +50,10 @@ registration_of_subjects() {
     T2AX_FILE=$(find_file "*_Clinical_T2W_TSE.nii*")
     T2SAG_FILE=$(find_file "*_DRIVE_CLEAR.nii*")
     MFFE_FILE=$(find_file "*_mFFE_0.65_14slice_e1.nii*")
+    LYMPH_RAW=$(find_file "*ubMask.nii")
 
     #--------------------- warn if missing -------------------------
-    for var in MT_FILE B0_FILE B1_FILE MFA_FILE T1_FILE T2AX_FILE T2SAG_FILE MFFE_FILE; do
+    for var in MT_FILE B0_FILE B1_FILE MFA_FILE T1_FILE T2AX_FILE T2SAG_FILE MFFE_FILE LYMPH_RAW; do
         [[ -n "${!var}" ]] || echo "WARNING: $var not found"
     done
 
@@ -71,6 +72,11 @@ registration_of_subjects() {
         sct_image -i "$src" -setorient RPI -o "$out"
         ORIENTED[$key]="$out"
     done
+
+    declare -A INPUTS=(
+      [LYMPH]="$LYMPH_RAW"
+    )
+    cp "${INPUTS[LYMPH]}" "${id}_LYMPH.nii"
 
     # ------------------------------------------------------------------
     # 2.  Registration using SCT for cord specific images
