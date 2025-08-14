@@ -1,6 +1,6 @@
 # Lymph Node qMT Project
 **Author:** Trabont  
-**Year:** 2025  
+**Year:** 2024 - 2025  
 
 This document describes the process for running this project's scripts, the location of data, and the structure of outputs.  
 As the data has already been processed, it also serves as documentation of output locations.
