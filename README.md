@@ -107,7 +107,7 @@ nfs/masi/trabont/Lymph
 ├ SP_Analysis.m
 ├ fullFit.m
 ├ singlePTFit.m
-├ HistBoxWhisker.m
+├ histBoxWhisker.m
 ├ combine.m
 ├ maskOverlay.m
 ```
@@ -128,8 +128,8 @@ nfs/masi/trabont/Lymph
 * [`Loop_FF.m`](./Loop_FF.m) and [`Loop_1pt.m`](./Loop_1pt.m) will loop through all groups and subjects and fit accordingly.
     - Calls [`fullFit.m`](./fullFit.m) or [`singlePTFit.m`](./singlePTFit.m): produces each subject's parameter maps (.mat) for designated slices using fit designated functions (see /functions)
     - Calls [`combine.m`](./combine.m): produces combined parameter .mat
-* [`FF_Analysis.m`](./FF_Analysis.m) and [`SP_Analysis.m`](./SP_Analysis.m): will create parameter, tissue (ROI), lineshape, and group specified Histograms and Box and Whisker Plots, and produce an Excel file that provides the Median HC and MS parameters of each tissue per lineshape.
-    - Calls [`HistBoxWhisker.m`](./HistBoxWhisker.m) to produce and save figures
+* [`FF_Analysis.m`](./FF_Analysis.m) and [`SP_Analysis.m`](./SP_Analysis.m): will create parameter, tissue (ROI), lineshape, and group specified Histograms and Box and Whisker Plots, and produce a .mat file that provides the Median HC and MS parameters of each tissue per lineshape.
+    - Calls [`histBoxWhisker.m`](./histBoxWhisker.m) to produce and save figures
       
  
 **EXAMPLES OF OUTPUTS**
@@ -342,7 +342,7 @@ n = number of slices for all subjects that have lymph node segmentations\
 
 Path Directory to Pre-Processed Data:
 ```bash
-BaseDir/Processed/MS/#
+BaseDir/PreProcessed/MS/#
 BaseDir/PreProcessed/HC/#
 ```
 > (`#` is a folder for each subject)
