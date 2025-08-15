@@ -337,6 +337,10 @@ nP = number of parameter maps (PSR, kba, R1obs, etc.)
   ### Group Independent Histogram
 
   ### Combined Group Histograms
+
+  ### Group Independent Box Plots
+
+  ### Combined Group Box Plots
   
 </details>
 
