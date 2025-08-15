@@ -45,43 +45,43 @@ nfs/masi/trabont/Lymph
       ├ /#
 
     ├ /FullFit_HC
-      ├ FF_HC_all_tissue.mat
-      ├ FF_HC_all_SL_*.mat
-      ├ FF_HC_all_L_*.mat
-      ├ FF_HC_all_G_*.mat
-      ├ FF_HC_all_SL_**_MAP.png
-      ├ FF_HC_all_L_**_MAP.png
-      ├ FF_HC_all_G_**_MAP.png
+      ├ All_tissue.mat
+      ├ All_SL_*.mat
+      ├ All_L_*.mat
+      ├ All_G_*.mat
+      ├ All_SL_**_MAP.png
+      ├ All_L_**_MAP.png
+      ├ All_G_**_MAP.png
       ├ /#
 
     ├ /FullFit_MS
-      ├ FF_MS_all_tissue.mat
-      ├ FF_MS_all_SL_*.mat
-      ├ FF_MS_all_L_*.mat
-      ├ FF_MS_all_G_*.mat
-      ├ FF_MS_all_SL_**_MAP.png
-      ├ FF_MS_all_L_**_MAP.png
-      ├ FF_MS_all_G_**_MAP.png
+      ├ All_tissue.mat
+      ├ All_SL_*.mat
+      ├ All_L_*.mat
+      ├ All_G_*.mat
+      ├ All_SL_**_MAP.png
+      ├ All_L_**_MAP.png
+      ├ All_G_**_MAP.png
       ├ /#
 
     ├ SinglePT_HC
-      ├ SP_HC_all_tissue.mat
-      ├ SP_HC_all_SL_*.mat
-      ├ SP_HC_all_L_*.mat
-      ├ SP_HC_all_G_*.mat
-      ├ SP_HC_all_SL_**_MAP.png
-      ├ SP_HC_all_L_**_MAP.png
-      ├ SP_HC_all_G_**_MAP.png
+      ├ All_tissue.mat
+      ├ All_SL_*.mat
+      ├ All_L_*.mat
+      ├ All_G_*.mat
+      ├ All_SL_**_MAP.png
+      ├ All_L_**_MAP.png
+      ├ All_G_**_MAP.png
       ├ /#
 
     ├ SinglePT_MS
-      ├ SP_MS_all_tissue.mat
-      ├ SP_MS_all_SL_*.mat
-      ├ SP_MS_all_L_*.mat
-      ├ SP_MS_all_G_*.mat
-      ├ SP_MS_all_SL_**_MAP.png
-      ├ SP_MS_all_L_**_MAP.png
-      ├ SP_MS_all_G_**_MAP.png
+      ├ All_tissue.mat
+      ├ All_SL_*.mat
+      ├ All_L_*.mat
+      ├ All_G_*.mat
+      ├ All_SL_**_MAP.png
+      ├ All_L_**_MAP.png
+      ├ All_G_**_MAP.png
       ├ /#
 
 ├ /functions
