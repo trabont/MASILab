@@ -263,9 +263,7 @@ BaseDir/Processed/FullFit_HC/14329/14329_slice*_*_*.mat
   
 <img width="280" height="519" alt="image" src="https://github.com/user-attachments/assets/46789b32-96d4-48fa-a529-d4e3bd910129" />
 
-There may be more parameter maps not shown here (resn, chi2, and chi2p).
-
-Each .mat will be a 256x256 array.
+Each .mat will be a 256x256xNum_Parameters array.
  
 --- 
 
@@ -319,12 +317,11 @@ Combined Parameter .mat files are differentiated by lineshape_parameter.
 
 <img width="280" height="236" alt="image" src="https://github.com/user-attachments/assets/651f2a38-4781-4096-aa0f-cdca1819473e" />
 
-Note: LYMPH is not combined into its own differentiating lineshape matrix but is included in MS_all_tissues.mat
 
-These MS_all_tissues.mat files have dimensions: [256x256x3xnx8]\
+All_*_*.mat files are merged into MS_all_tissues.mat having dimensions: [256x256x3xnSxnP]\
 3 = number of lineshapes (SL, L, G)\
-n = number of slices for all subjects that have lymph node segmentations\
-8 = number of parameter maps (PSR, kba, R1obs, etc.)
+nS = number of slices for all subjects that have lymph node segmentations\
+mP = number of parameter maps (PSR, kba, R1obs, etc.)
 
   
 </details>
