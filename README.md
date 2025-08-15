@@ -22,7 +22,7 @@ nfs/masi/trabont/Lymph
 
 <ins> Key <ins>
 * `*`   = WM, GM, LYMPH, CSF
-* `**`  = PSR, kba, T2b, T2R1
+* `**`  = PSR, kba, T2b, T2R1, etc.
 * `#`   = subject ID folder(s)
 * `##`  = files of various names identifiable with subject ID number  
 
