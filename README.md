@@ -321,7 +321,7 @@ Combined Parameter .mat files are differentiated by lineshape_parameter.
 All_*_*.mat files are merged into MS_all_tissues.mat having dimensions: [256x256x3xnSxnP]\
 3 = number of lineshapes (SL, L, G)\
 nS = number of slices for all subjects that have lymph node segmentations\
-mP = number of parameter maps (PSR, kba, R1obs, etc.)
+nP = number of parameter maps (PSR, kba, R1obs, etc.)
 
   
 </details>
