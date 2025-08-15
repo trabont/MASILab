@@ -144,6 +144,7 @@ nfs/masi/trabont/Lymph
   
 ```ruby
 BaseDir/Processed/MS/MaskOverlays/137929_maskOverlay.jpg
+BaseDir/Processed/HC/MaskOverlays/14329_maskOverlay.jpg
 ```
 
 Overlay images are used to verify ROI placement.
@@ -163,6 +164,7 @@ Overlay images are used to verify ROI placement.
   
 ```ruby
 BaseDir/Processed/FullFit_MS/FILE_CHECK.xlsx
+BaseDir/Processed/FullFit_HC/FILE_CHECK.xlsx
 ```
 
 File assists in checking file existence and dimensions.\
@@ -183,6 +185,7 @@ If all of a subject's files exist, the dimensions should be the following:
   
 ```ruby
 BaseDir/Processed/FullFit_MS/FF_MED_DICE_CENTROID.xlsx
+BaseDir/Processed/FullFit_HC/FF_MED_DICE_CENTROID.xlsx
 ```
 
   #### (3.1) FF_MED_DICE_CENTROID.xlsx : Sheet 'SL'
@@ -202,6 +205,7 @@ BaseDir/Processed/FullFit_MS/FF_MED_DICE_CENTROID.xlsx
   
 ```ruby
 BaseDir/Processed/FullFit_MS/137929/137929_slice*_*_*_FitZ.png
+BaseDir/Processed/FullFit_HC/14329/14329_slice*_*_*_FitZ.png
 ```
   These image names are differentiated by slice#_lineshape_ROI.\
   These images will have three figures (one for each lineshape) per tissue and slice.\
@@ -211,7 +215,7 @@ BaseDir/Processed/FullFit_MS/137929/137929_slice*_*_*_FitZ.png
 
   <img width="1313" height="914" alt="137929_slice08_WM_L_FitZ" src="https://github.com/user-attachments/assets/94171d49-386b-42af-ab94-ce9e8690a227" />
 
-  The image above is the Median Full Fit of 137929's WM using a Lorentzian lineshape on slice 8.
+  The image above is the MS Median Full Fit of 137929's WM using a Lorentzian lineshape on slice 8.
 
 </details>
 
@@ -235,13 +239,14 @@ BaseDir/Processed/FullFit_MS/137929/137929_slice*_*_*_FitZ.png
   
 ```ruby
 BaseDir/Processed/FullFit_MS/137929/137929_slice08_MTdynamics.png
+BaseDir/Processed/FullFit_HC/14329/14329_slice08_MTdynamics.png
 ```
 
 These images check that there is a difference in contrast between Power and Offset Frequency.
 
 <img width="2975" height="798" alt="137929_slice08_MTdynamics" src="https://github.com/user-attachments/assets/e241f7c0-bec6-4b1a-aa66-ed8ea639043f" />
 
-  In this image, we see subject 137929's slice 8 having a good contrast difference between frequency offsets and powers. \
+  In this image, we see MS subject 137929's slice 8 having a good contrast difference between frequency offsets and powers. \
   In addition, we can see that the image contains no significant artifacts that depreciate the signal intensity.
 
  --- 
@@ -252,12 +257,13 @@ Path to Output:
 
 ```ruby
 BaseDir/Processed/FullFit_MS/137929/137929_slice*_*_*.mat
+BaseDir/Processed/FullFit_HC/14329/14329_slice*_*_*.mat
 ```
   Parameter matrix (.mat) files differentiated by slice_lineshape_ROI
   
 <img width="280" height="519" alt="image" src="https://github.com/user-attachments/assets/46789b32-96d4-48fa-a529-d4e3bd910129" />
 
-There may be more parameter maps not shown here (res and chi2p).
+There may be more parameter maps not shown here (resn, chi2, and chi2p).
 
 Each .mat will be a 256x256 array.
  
@@ -269,6 +275,7 @@ Path to Output:
 
 ```ruby
 BaseDir/Processed/FullFit_MS/137929/137929_slice*_PSR_overlay.png
+BaseDir/Processed/FullFit_HC/14329/14329_slice*_PSR_overlay.png
 ```
 
 These overlay images are meant to ensure voxel-wise analysis location and value distribution.
@@ -287,7 +294,8 @@ Note: The color bar is inaccurate.
 Path to Output:
 
 ```ruby
-BaseDir/Processed/FullFit_MS/MS_all_*_*_MSP.png
+BaseDir/Processed/FullFit_MS/All_*_*_MSP.png
+BaseDir/Processed/FullFit_HC/All_*_*_MSP.png
 ```
 Combined Parameter Map images are differentiated by lineshape_parameter.
 
@@ -304,7 +312,8 @@ As you can see in this image, some maps are empty, which requires either a re-ru
 Path to Output:
 
 ```ruby
-BaseDir/Processed/FullFit_MS/MS_all_*_*.mat
+BaseDir/Processed/FullFit_MS/All_*_*.mat
+BaseDir/Processed/FullFit_HC/All_*_*.mat
 ```
 Combined Parameter .mat files are differentiated by lineshape_parameter.
 
