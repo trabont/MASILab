@@ -23,6 +23,7 @@ nfs/masi/trabont/Lymph
 <ins> Key <ins>
 * `*`   = WM, GM, LYMPH, CSF
 * `**`  = PSR, kba, T2b, T2R1, etc.
+* `***` = SL, L, G
 * `#`   = subject ID folder(s)
 * `##`  = files of various names identifiable with subject ID number  
 
@@ -84,6 +85,15 @@ nfs/masi/trabont/Lymph
       ├ All_G_**_MAP.png
       ├ /#
 
+    ├ /FullFit_Analysis
+      ├ Whisker_OUTLINE_**_***.png
+      ├ Whisker_PTS_**_***.png
+      ├ Box_**.png
+      ├ ***_*_**_Hist.png
+      ├ bin_widths_data_span.tsv
+      ├ fit_metric_bounds.tsv
+      ├ /#
+
 ├ /functions
     ├ yarnykh_pulseMT.m
     ├ Analysis_Yarnykh_Full_Fit.m
@@ -110,6 +120,7 @@ nfs/masi/trabont/Lymph
 ├ histBoxWhisker.m
 ├ combine.m
 ├ maskOverlay.m
+├ fit_metrics.m
 ```
 
 ---
@@ -117,20 +128,38 @@ nfs/masi/trabont/Lymph
 ## 📝 Information Details
 **DESCRIPTION OF FUNCTIONS AND FILES**
 * [`/functions`](./functions) contains all vital MATLAB functions required to perform the voxel-based **Full Fit** and **Single Point** analysis.
+  
 * [`MS_List`](./MS_List.txt) and [`HC_List`](./HC_List.txt) each contain the list of subject identification numbers found in **SMITH** / **SMITH\_HC** in XNAT.
-* [`file_check_all.m`](./file_check_all.m) will check the existence of registered files (both HC and MS independently) and produce an Excel sheet for all subjects that **should be reviewed _before_ running Loop_FF.m**. In addition, it will generate an exclusion list (determined by file existence).
-    - Calls [`maskOverlay.m`](./maskOverlay.m): produces+saves images of ROI masks on MT and T2 images in <ins>/MaskOverlays/#_maskOverlay.jpg'</ins>
-      - Note: this will only produce one overlay per subject
-    - Calls [`file_checking.m`](./file_checking.m): produces registered subject file dimensions ('NA' if file does not exist) in <ins>'FILE_CHECK.xlsx'</ins>
-    - Calls [`med_dice_centr.m`](./med_dice_centr.m): produces registered subject DICE and Centroid Difference of spinal cord segmentations and a check of ROI median Full Fit Analysis in <ins>'FF_MED_DICE_CENTROID.xlsx'</ins> and .PNG line fits
+  
+* [`file_check_all.m`](./file_check_all.m) will check registered file details and generate a subject exclusion list (files missing). All outputs from file_check_all.m **should be reviewed _before_ running Loop_FF.m**.
+    - Calls [`maskOverlay.m`](./maskOverlay.m)
+      - produces+saves images of ROI masks on MT and T2 images in <ins>/MaskOverlays/#_maskOverlay.jpg'</ins>
+          - Note: this will only produce one overlay per subject
+    - Calls [`file_checking.m`](./file_checking.m)
+      - produces registered subject file dimensions ('NA' if file does not exist) in <ins>'FILE_CHECK.xlsx'</ins>
+    - Calls [`med_dice_centr.m`](./med_dice_centr.m)
+      - produces a registered subject DICE and Centroid Difference of spinal cord segmentations Excel file
+      - produces a median ROI check of the Full Fit Analysis Excel file
+        - Note: The median ROI Full Fit Analysis is _not_ a voxelwise analysis
+        - Note: The Excel shows one fit per lineshape using a median value of each subject's ROI to validate [`/functions`](./functions) runability
+      - produces fitted vs normalized data z-spectrum figures
         - Note: med_dice_centr.m will only use files that are NOT on the exclusion list created by file_checking.m
-        - Note: Median Full Fit Analysis is _not_ a voxelwise analysis. The Excel shows one fit per lineshape using a median value of each subject's ROI to validate [`/functions`](./functions) has everything and is runnable.
+        - Note: Figures show one fit per lineshape using a median value of each subject's ROI to validate [`/functions`](./functions) runability
+          
 * [`Loop_FF.m`](./Loop_FF.m) and [`Loop_1pt.m`](./Loop_1pt.m) will loop through all groups and subjects and fit accordingly.
-    - Calls [`fullFit.m`](./fullFit.m) or [`singlePTFit.m`](./singlePTFit.m): produces each subject's parameter maps (.mat) for designated slices using fit designated functions (see /functions)
-    - Calls [`combine.m`](./combine.m): produces combined parameter .mat
-* [`FF_Analysis.m`](./FF_Analysis.m) and [`SP_Analysis.m`](./SP_Analysis.m): will create parameter, tissue (ROI), lineshape, and group specified Histograms and Box and Whisker Plots, and produce a .mat file that provides the Median HC and MS parameters of each tissue per lineshape.
-    - Calls [`histBoxWhisker.m`](./histBoxWhisker.m) to produce and save figures
-      
+    - Calls [`fullFit.m`](./fullFit.m) and [`singlePTFit.m`](./singlePTFit.m)
+      - produces each subject's parameter maps (.mat) for designated slices using fit designated functions (see /functions)
+    - Calls [`combine.m`](./combine.m)
+      - produces a combined parameter
+      - produces a parameter subplot figure of all subject-slices for each parameter for each group
+        
+* [`FF_Analysis.m`](./FF_Analysis.m) and [`SP_Analysis.m`](./SP_Analysis.m) will create Excel files and figures necessary to analyze fit results. 
+    - Calls [`histBoxWhisker.m`](./histBoxWhisker.m)
+      - produces parameter, tissue (ROI), lineshape, and group specified Histograms and Box and Whisker Plots figures
+      - produces a .mat file of the Median HC and MS parameters of each tissue per lineshape
+      - produces an Excel file to view parameter, tissue (ROI), and lineshape specified histogram information
+    - Calls [`fit_metrics.m`](./fit_metrics.m)
+      - produces an Excel file to view fit metrics across all groups
  
 **EXAMPLES OF OUTPUTS**
 <details>
@@ -216,6 +245,8 @@ BaseDir/Processed/FullFit_HC/14329/14329_slice*_*_*_FitZ.png
   <img width="1313" height="914" alt="137929_slice08_WM_L_FitZ" src="https://github.com/user-attachments/assets/94171d49-386b-42af-ab94-ce9e8690a227" />
 
   The image above is the MS Median Full Fit of 137929's WM using a Lorentzian lineshape on slice 8.
+  
+---
 
 </details>
 
@@ -292,12 +323,12 @@ Note: The color bar is inaccurate.
 Path to Output:
 
 ```ruby
-BaseDir/Processed/FullFit_MS/All_*_*_MSP.png
-BaseDir/Processed/FullFit_HC/All_*_*_MSP.png
+BaseDir/Processed/FullFit_MS/All_*_*_MAP.png
+BaseDir/Processed/FullFit_HC/All_*_*_MAP.png
 ```
 Combined Parameter Map images are differentiated by lineshape_parameter.
 
-These images are meant to verify the merge of parameter-specific maps (excluding LYMPH).
+These images are meant to verify the merge of parameter-specific maps (LYMPH may not appear).
 
 <img width="3300" height="2194" alt="MS_all_SL_PSR_MAP" src="https://github.com/user-attachments/assets/3fb072a9-31fc-4a3b-87b7-edd08f9d348d" />
 
@@ -323,6 +354,7 @@ All_*_*.mat files are merged into MS_all_tissues.mat having dimensions: [256x256
 nS = number of slices for all subjects that have lymph node segmentations\
 nP = number of parameter maps (PSR, kba, R1obs, etc.)
 
+--- 
   
 </details>
 <details>
@@ -334,14 +366,98 @@ nP = number of parameter maps (PSR, kba, R1obs, etc.)
 
   --- 
 
-  ### Group Independent Histogram
+  ### (1) Box and Whiskers
 
-  ### Combined Group Histograms
+  Path to Output:
 
-  ### Group Independent Box Plots
+  ```ruby
+  BaseDir/Processed/FullFit_Analysis/Whisker_OUTLINE_**_***.png
+  BaseDir/Processed/FullFit_Analysis/Whisker_PTS_**_***.png
+  BaseDir/Processed/FullFit_Analysis/Box_**.png
+  ```
+  Images are differentiated by *** = lineshape and ** = parameter.
 
-  ### Combined Group Box Plots
+  #### (1.1) Box and Whisker (Lineshape Exclusivity) - Basic
+
+  The following image is the basic outline of the box and whisker plot comparing Healthy Controls and MS Subjects across all tissues.
+
+  <img width="1979" height="1250" alt="Whisker_OUTLINE_kba_SL" src="https://github.com/user-attachments/assets/98df36f8-9b4f-4edd-bdc9-e12d448f6fbe" />
+
+  In this image, we see all tissue's kba box plots generated from a Super-Lorentzian lineshape.\
+  There is one image for every parameter and lineshape. \
+  Total Basic Box Plots = N_param x N_lineshapes.
+
+--- 
+
+  #### (1.2) Box and Whisker (Lineshape Exclusivity) - Filled
+
+The following image is the whole box and whisker plot comparing Healthy Controls and MS Subjects across all tissues. In addition, each voxel (color coordinated by group type) is also plotted to show voxel value distribution.
   
+<img width="1875" height="1250" alt="Whisker_PTS_kba_SL" src="https://github.com/user-attachments/assets/58637b3e-f314-4c77-a0b6-9afaa43b25e2" />
+
+  In this image, we see all tissue's kba box plots generated from a Super-Lorentzian lineshape.\
+  There is one image for every parameter and lineshape. \
+  Total Basic Box Plots = N_param x N_lineshapes.
+
+--- 
+
+  #### (1.3) Box and Whisker (All Lineshapes) - Filled
+
+The following image is the whole box and whisker plot comparing lineshape contribution to parameter values across all tissues and groups. In addition, each voxel (color coordinated by group type) is also plotted to show voxel value distribution.
+
+<img width="3900" height="2025" alt="Box_kba_UnifiedMask" src="https://github.com/user-attachments/assets/a1c514c6-7458-4faa-b18b-0897d9184e97" />
+
+ In this image, we see kba box plots generated from all lineshapes.\
+  There is one image for every parameter.\
+ Note: The bolded value is the median of the combined group data.
+
+--- 
+
+  ### (2) Histogram + KDE
+
+  ```ruby
+  BaseDir/Processed/FullFit_Analysis/***_*_**_Hist.png
+  ```
+  Images are differentiated by *** = lineshape, ** = parameter, * = tissue/ROI.
+
+  These histograms are meant to identify the distribution of parameter values for each group.\
+
+  <img width="3063" height="2374" alt="SL_WM_kba_Hist" src="https://github.com/user-attachments/assets/05edaeee-a9b5-4c25-bc5a-42c137565e0a" />
+
+In this image, we see the White Matter (WM) kba distribution fitted by the Super-Lorentzian lineshape (SL).\
+  There is one image for every parameter and lineshape.
+
+--- 
+
+  ### (3) Excel
+
+  ```ruby
+  BaseDir/Processed/FullFit_Analysis/bin_widths_data_span.xlsx
+  BaseDir/Processed/FullFit_Analysis/fit_metric_bounds.xlsx
+  ```
+
+  #### (3.1) Histogram Analysis/Detail
+
+  The following file details histogram information (values pertain to combined groups).
+
+<img width="774" height="351" alt="image" src="https://github.com/user-attachments/assets/a6773a7e-3431-4389-adbd-8c7ceeca07c3" />
+
+Note: This image has been cropped to only show kba.\
+Note: The appearance of this sheet may be different.
+
+--- 
+
+  #### (3.2) Fitting Analysis (Chi, Chi2p, and Resn)
+
+  The following file details each group's fitting quality for each lineshape.
+
+<img width="891" height="544" alt="image" src="https://github.com/user-attachments/assets/5dd0a8ea-2636-4053-98ba-6565c2c6e063" />
+
+Note: This image has been cropped to only show chi2.\
+Note: The appearance of this sheet may be different.
+
+--- 
+
 </details>
 
 
