@@ -1,32 +1,34 @@
 ## 📝 Information Details
+**DESCRIPTION OF FUNCTIONS AND FILES**
 
-#### [`/functions`](./functions) 
-Core MATLAB functions for **Full Fit** and **Single Point** analysis
-
----
-
-#### [`MS_List.txt`](./MS_List.txt), [`HC_List.txt`](./HC_List.txt)
-Subject IDs for MS / HC groups from **SMITH** in XNAT.
+##### [`/functions`](./functions) 
+Contains all vital MATLAB functions required to perform the voxel-wise **Full Fit** and **Single Point** analysis
 
 ---
 
-#### [`file_check_all.m`](./file_check_all.m)
-Checks registered files and generates exclusion lists.\
-**Run this *before* Loop\_FF.m.**
+##### [`MS_List.txt`](./MS_List.txt), [`HC_List.txt`](./HC_List.txt)
+Each file contains a list of Subject Identification Numbers for MS / HC groups found in **SMITH** / **SMITH_HC** in XNAT
+
+---
+
+##### [`file_check_all.m`](./file_check_all.m)
+Checks registered file details and generates a subject exclusion lists (files missing).\
+**All outputs should be reviewed *before* Loop\_FF.m.**
 
 Calls:
   * [`maskOverlay.m`](./maskOverlay.m)
-    * Produces ROI overlays saved in `Processed/*/MaskOverlays/` (one per subject).
-    * Used to verify ROI placement.
+    * Produces ROI overlays on MT and T2 images saved in `Processed/*/MaskOverlays/`
   * [`file_checking.m`](./file_checking.m)
-    * Produces `FILE_CHECK.xlsx` (dimensions; “NA” = missing file).
-    * If all subject files exist, dimensions should match expected SCT/ANTs values.
+    * Produces registered subject file dimensions ('NA' if file does not exist) Excel
   * [`med_dice_centr.m`](./med_dice_centr.m)
-    * Produces `FF_MED_DICE_CENTROID.xlsx` with Dice + centroid difference.
-    * Generates a **median ROI Full Fit check** (not voxelwise).
-    * Uses only subjects **not excluded** in `FILE_CHECK.xlsx`.
-    * Produces median z-spectrum fit figures (one per lineshape per tissue/slice).
-    * These are meant to validate [`/functions`](./functions) runability, not provide final analysis.
+    * Produces a registered subject spinal cord segmentation DICE and Centroid Difference Excel file
+    * Produces a **median ROI Full Fit Analysis Excel File**
+    * Produces median z-spectrum fit figures (one per lineshape per tissue/slice)
+
+ ⚠️ **Notes:**
+* One ROI overlay is generated per subject
+* DICE + Centroid Difference + Median Z-spectrum uses only subjects **not excluded** in file_checking.m
+* The median ROI Full Fit Analysis Excel File is not a voxel-wise analysis
 
 **Example Outputs**
 
@@ -42,27 +44,16 @@ Calls:
 
 ---
 
-#### [`Loop_FF.m`](./Loop_FF.m) / [`Loop_1pt.m`](./Loop_1pt.m)
-Loops through all groups and subjects → performs voxelwise **Full Fit** or **Single Point** fitting.
+##### [`Loop_FF.m`](./Loop_FF.m) / [`Loop_1pt.m`](./Loop_1pt.m)
+Loops through all groups and subjects → performs voxelwise **Full Fit** or **Single Point**
 
-* Calls:
-
+Calls:
   * [`fullFit.m`](./fullFit.m), [`singlePTFit.m`](./singlePTFit.m)
-
-    * Produce per-subject parameter maps (`.mat`) for each slice/ROI.
+    * Produce per-subject parameter maps (`.mat`) for designated slices for each lineshape fit
+    * Produce a figure of the PSR overlay on the MT slice 
   * [`combine.m`](./combine.m)
-
-    * Produces combined parameter maps across all subjects.
-    * Also generates parameter subplots per lineshape/parameter/group.
-
-⚠️ **Notes:**
-
-* Figures are **QC only**, meant to verify fit function execution.
-* Combined group `.mat` files follow shape `[256 x 256 x 3 x nSlices x nParams]`:
-
-  * `3` = number of lineshapes (SL, L, G)
-  * `nSlices` = total slices with lymph node segmentations
-  * `nParams` = number of parameter maps (PSR, kba, R1obs, etc.)
+    * Produces combined parameter maps (`.mat`) using all per-subject parameter maps for each group
+    * Produces a figure subplot (each plot designated by ID and slice) for each lineshape/parameter/group
 
 **Example Outputs**
 
@@ -79,26 +70,16 @@ Loops through all groups and subjects → performs voxelwise **Full Fit** or **S
 
 ---
 
-#### [`FF_Analysis.m`](./FF_Analysis.m) / [`SP_Analysis.m`](./SP_Analysis.m)
+##### [`FF_Analysis.m`](./FF_Analysis.m) / [`SP_Analysis.m`](./SP_Analysis.m)
 Generates **figures and Excel outputs** for group comparisons.
 
-* Calls:
-
+Calls:
   * [`histBoxWhisker.m`](./histBoxWhisker.m)
-
     * Produces histograms and box/whisker plots (by parameter, tissue, lineshape, group).
-    * Exports `.mat` with median HC + MS parameters per tissue/lineshape.
-    * Exports Excel with histogram statistics.
+    * Produces a `.mat` with median HC + MS parameters per tissue/lineshape.
+    * Produces an Excel file with histogram statistics
   * [`fit_metrics.m`](./fit_metrics.m)
-
-    * Produces Excel files with fit metrics (chi², chi²p, resn) for each group/lineshape.
-
-⚠️ **Notes:**
-
-* Median ROI checks are **not voxelwise** — they are validation summaries.
-* Histograms and KDE plots show parameter distributions per ROI/group.
-* Box/whisker plots can be generated per lineshape or across all lineshapes.
-* Excel outputs provide **bin widths, histogram details, and fit quality ranges**.
+    * Produces an Excel file with fit metrics (chi², chi²p, resn) for each group/lineshape.
 
 **Example Outputs**
 
