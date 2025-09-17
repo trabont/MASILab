@@ -1,3 +1,19 @@
+% file_check_all.m
+% ------------------
+% Requirements to Run:
+%       (1) file_checking
+%       (2) mask_overlay.m
+%       (3) med_dice_centr.m
+% Functionality:
+%       (1) First Process MS then HC groups
+%       (2) Check file dimensions of registered files (export .xlsx)
+%       (3) Using FILE_CHECK.xlsx generate subject exclusion list (based on
+%           the dimension "NA"
+%       (4) Produce all ROI mask overlays for slices with lymph ROI present
+%           using the exclusion list to skip subjects with bad dimensions
+%       (5) Produce med_dice_centr excel sheets and figures
+% ------------------
+
 clear; clc;
 
 % === USER SETTINGS ===
@@ -26,26 +42,34 @@ missing = (X=="NA") | (Y=="NA") | (Z=="NA") | (TT=="NA");
 % Unique IDs to exclude (as a cell array of char)
 excludeIDs = cellstr(unique(string(T.ID(missing))))';
 
+mask_overlay(baseDir,subjList,excludeIDs);
+
 for ii = 1:numel(subjList)
     fileID = subjList{ii};
-    
+
     % skip excluded IDs
     if any(strcmp(fileID, excludeIDs))
         fprintf('Skipping subject %s\n', fileID);
         continue;
     end
-    
-    id = str2double(fileID);
+
+    id      = str2double(fileID);
     subjDir = fullfile(baseDir, fileID);
     saveDir = fullfile(saveRoot, fileID);
-    if ~exist(saveDir,'dir')
-        mkdir(saveDir);
+    if ~exist(saveDir,'dir'), mkdir(saveDir); end
+
+    try
+        med_dice_centr(baseDir, saveRoot, id, excludeIDs);
+    catch ME
+        % Log and keep going
+        fprintf(2, 'Subject %s failed in med_dice_centr: %s\n', fileID, ME.message);
+        continue;
     end
-    
-    med_dice_centr(baseDir, saveRoot, id);
 end
 
-clear; clc;
+
+excludeIDs_MS = excludeIDs;
+clear("excludeIDs");
 
 % === USER SETTINGS ===
 baseDir    = fullfile(pwd,'Processed','HC');        % where subject folders live
@@ -73,21 +97,30 @@ missing = (X=="NA") | (Y=="NA") | (Z=="NA") | (TT=="NA");
 % Unique IDs to exclude (as a cell array of char)
 excludeIDs = cellstr(unique(string(T.ID(missing))))';
 
+mask_overlay(baseDir,subjList,excludeIDs);
+
 for ii = 1:numel(subjList)
     fileID = subjList{ii};
-    
+
     % skip excluded IDs
     if any(strcmp(fileID, excludeIDs))
         fprintf('Skipping subject %s\n', fileID);
         continue;
     end
-    
-    id = str2double(fileID);
+
+    id      = str2double(fileID);
     subjDir = fullfile(baseDir, fileID);
     saveDir = fullfile(saveRoot, fileID);
-    if ~exist(saveDir,'dir')
-        mkdir(saveDir);
+    if ~exist(saveDir,'dir'), mkdir(saveDir); end
+
+    try
+        med_dice_centr(baseDir, saveRoot, id, excludeIDs);
+    catch ME
+        % Log and keep going
+        fprintf(2, 'Subject %s failed in med_dice_centr: %s\n', fileID, ME.message);
+        continue;
     end
-    
-    med_dice_centr(baseDir, saveRoot, id);
 end
+
+
+exclusions = unique([excludeIDs_MS,excludeIDs]);
