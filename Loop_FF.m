@@ -10,12 +10,13 @@ if ~exist(saveRoot,'dir')
 end
 
 % IDs you want to skip:
-excludeIDs = {'MaskOverlays'};  % <-- modify this list
+excludeIDs = exclusions;  % <-- exclusions is generated after running file_check_all.m
 
 % find all subject folders
 d       = dir(upload);
 isSubj  = [d.isdir] & ~ismember({d.name},{'.','..'});
 subjList= {d(isSubj).name};
+mask_overlay(baseDir,subjList,excludeIDs);
 
 for ii = 1:numel(subjList)
     fileID = subjList{ii};
@@ -35,6 +36,7 @@ for ii = 1:numel(subjList)
 
     fullFit(baseDir, saveDir, id);
 end
+fprintf('MS OVER');
 
 % === USER SETTINGS ===
 baseDir    = fullfile(pwd,'Processed','HC');        % where subject folders live
@@ -45,29 +47,27 @@ if ~exist(saveRoot,'dir')
     mkdir(saveRoot);
 end
 
-% IDs you want to skip:
-excludeIDs = {'MaskOverlays'};  % <-- modify this list
-
 % find all subject folders
 d       = dir(upload);
 isSubj  = [d.isdir] & ~ismember({d.name},{'.','..'});
 subjList= {d(isSubj).name};
+mask_overlay(baseDir,subjList,excludeIDs);
 
 for ii = 1:numel(subjList)
     fileID = subjList{ii};
-    
+
     % skip excluded IDs
     if any(strcmp(fileID, excludeIDs))
         fprintf('Skipping subject %s\n', fileID);
         continue;
     end
-    
+
     id = str2double(fileID);
     subjDir = fullfile(baseDir, fileID);
     saveDir = fullfile(saveRoot, fileID);
     if ~exist(saveDir,'dir')
         mkdir(saveDir);
     end
-    
+
     fullFit(baseDir, saveDir, id);
 end
