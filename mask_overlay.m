@@ -1,4 +1,4 @@
-function mask_overlay(rootDir)
+function mask_overlay(rootDir,subjList,excludeIDs)
 % MASK_OVERLAY Loop through ID folders, find a lymph slice with >10 voxels,
 % overlay GM/WM/CSF/LYMPH on MT/T2AX images with transparency, and save JPGs.
 %
@@ -14,14 +14,16 @@ if ~exist(maskDir,'dir')
     mkdir(maskDir);
 end
 
-listing = dir(rootDir);
-for i = 1:numel(listing)
-    name = listing(i).name;
-    % only numeric folders, skip MaskOverlays
-    if listing(i).isdir && ~ismember(name, {'.','..','MaskOverlays'}) ...
-            && ~isempty(regexp(name,'^\d+$','once'))
-        
-        idDir = fullfile(rootDir,name);
+for i = 1:length(subjList)
+    name = subjList(i);
+
+    % skip excluded IDs
+    if any(strcmp(name, excludeIDs))
+        continue;
+    end
+        nameS = string(name);
+        name = cell2mat(name);
+        idDir = fullfile(rootDir,nameS);
         
         % locate files
         MT1_f   = dir(fullfile(idDir,'*_registered_MT_1.nii.gz'));
@@ -44,16 +46,40 @@ for i = 1:numel(listing)
             LYMPH     = niftiread(fullfile(idDir, LYM_f(1).name));
         catch
             warning('Skipping %s: missing or unreadable file.', name);
+            excludeIDs{end+1} = name;
+            assignin("base","excludeIDs",excludeIDs);
             continue;
         end
         
-        % find first slice in lymph mask with >10 voxels
-        nz = size(LYMPH,3);
-        slice = find(arrayfun(@(z) nnz(LYMPH(:,:,z)), 1:nz) > 8, 1);
-        if isempty(slice)
-            warning('No slice > 8 voxels in LYMPH for %s', name);
-            continue;
+        % --- determine slices to process (based on LYMPH as you had) ---
+        sliceSum = squeeze(sum(sum(LYMPH,1),2));
+        slices   = find(sliceSum > 10);
+        if isempty(slices)
+          warning('Subject %s: no LYMPH mask → skipping', name);
+          excludeIDs{end+1} = name;
+          assignin("base","excludeIDs",excludeIDs);
+          continue;
         end
+          for ct = 1:length(slices)
+              if slices(ct) < 2
+                  slices(ct) = 0;
+              elseif slices(ct) > 10
+                  slices(ct) = 0;
+              else
+                  slices(ct) = slices(ct);
+              end
+          end
+        
+          slices = slices(find(slices > 0));
+          if isempty(slices)
+            warning('Subject %d: no LYMPH mask on reasonable slice → skipping', name);
+            excludeIDs{end+1} = name;
+            assignin("base","excludeIDs",excludeIDs);
+            continue;
+          end
+
+    for j = 1:length(slices)
+        slice = slices(j);
         
         % extract 2D slices
         MT1_slice   = squeeze(MT_1(:,:,slice,9));
@@ -108,9 +134,10 @@ for i = 1:numel(listing)
         hold off
         
         % save figure
-        outname = fullfile(maskDir, [name '_maskOverlay.jpg']);
-        saveas(hFig, outname);
+        outname = fullfile(maskDir, sprintf('%s_slice%02d_MaskOverlay.png',name,slice));
+        exportgraphics(hFig, outname);
         close(hFig);
     end
 end
 end
+
