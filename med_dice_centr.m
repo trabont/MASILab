@@ -1,5 +1,5 @@
 % Dice + Centroid + Median ROI Excel Analysis (no voxelwise loops)
-function med_dice_centr(baseDir, saveDir, fileID)
+function med_dice_centr(baseDir, saveDir, fileID, excludeIDs)
 % Running Requirements:
 %   - functions/Analysis_Yarnykh_Full_Fit.m on path
 %   - baseDir/<ID>/ contains "*_registered_*.nii.gz"
@@ -18,7 +18,6 @@ function med_dice_centr(baseDir, saveDir, fileID)
 %
 % Notes:
 %   - If no LYMPH slices are found, it returns (keeps your previous behavior).
-%   - Dice/Centroid not computed here (name preserved for continuity). Add later if needed.
 
 addpath("functions/");
 
@@ -54,7 +53,6 @@ roiNames = {'LYMPH','WM','GM','CSF'};
 % --- Spinal Cord masks ---
 segFiles = struct( ...
   'MT0',  fullfile(baseDir, sprintf('%s/%s_MT_dyn_0000_reg_sc.nii.gz', idstr, idstr)), ...
-  'mFFE',  fullfile(baseDir, sprintf('%s/%s_registered_mFFE_1_sc.nii.gz', idstr, idstr)), ...
   'MT8',  fullfile(baseDir, sprintf('%s/%s_MT_dyn_0008_reg_sc.nii.gz', idstr, idstr)), ...
   'MFA0', fullfile(baseDir, sprintf('%s/%s_MFA_dyn_0000_in_MT_sc.nii.gz', idstr, idstr)), ...
   'T1',   fullfile(baseDir, sprintf('%s/%s_registered_T1_1_sc.nii.gz', idstr, idstr)), ...
@@ -71,17 +69,39 @@ for ii = 1:numel(names)
         warning('Missing SC mask: %s', f);
     end
 end
+seg.mFFE = masks.WM + masks.GM;
 
 seg_Name = {'MT0','MT8','MFA0','T1','T2'};
 seg_CT = numel(seg_Name);
+sF = string(fileID);
+cF = char(sF);
 
 % --- determine slices to process (based on LYMPH as you had) ---
 sliceSum = squeeze(sum(sum(masks.LYMPH,1),2));
 slices   = find(sliceSum > 10);
 if isempty(slices)
-  warning('Subject %s: no LYMPH mask → skipping', fileID);
+  warning('Subject %d: no LYMPH mask → skipping', fileID);
+  excludeIDs{end+1} = cF;
+  assignin("base","excludeIDs",excludeIDs);
   return;
 end
+  for ct = 1:length(slices)
+      if slices(ct) < 2
+          slices(ct) = 0;
+      elseif slices(ct) > 10
+          slices(ct) = 0;
+      else
+          slices(ct) = slices(ct);
+      end
+  end
+
+  slices = slices(find(slices > 0));
+  if isempty(slices)
+    warning('Subject %d: no LYMPH mask on reasonable slice → skipping', fileID);
+    excludeIDs{end+1} = cF;
+    assignin("base","excludeIDs",excludeIDs);
+    return;
+  end
 
 % --- qMT acquisition parameters ---
 rf_offset = [1000,1500,2000,2500,8000,16000,32000,100000];  % 8
@@ -101,7 +121,7 @@ lines   = {'SL','L','G'};
 shapes  = {'super-lorentzian','lorentzian','gaussian'};
 
 % --- results accumulator for Excel ---
-acc = cell(0,10);  % ID,Slice,ROI,Reg,Lineshape,PSR,kba,T2a,T2b,R1obs
+acc = cell(0,13);  % ID,Slice,ROI,Reg,Lineshape,PSR,kba,T2a,T2b,R1obs,chi2p,res,resn
 bcc = cell(0,5);  % ID,Slice,Seg,DICE,Centroid Diff
 dcc = cell(0,5); %ID, x-pixels, y-pixels, z-dimension, t-dimension
 
@@ -166,43 +186,59 @@ for zz = slices(:)'
     % run three lineshapes
     for L = 1:3
       BaseParms.lineshape = shapes{L};
-
-      % Full Fit on ROI-median signals
-      [PSR, kba, T2a, T2b, R1obs] = Analysis_Yarnykh_Full_Fit(BaseParms, shapes{L});
-
-        corrB1  = BaseParms.B1/100;
-        [B1MT,tMT] = philipsRFpulse_FA(BaseParms.MT_flip, BaseParms.pwMT, 'am_sg_100_100_0');
-        B1eMT   = CWEqMTPulse(B1MT*corrB1, tMT, BaseParms.pwMT);
-        thetaEX = ([BaseParms.qMTflip BaseParms.qMTflip]*pi/180).*corrB1;
-        ts = 1e-3;
-        TRs = [BaseParms.TR*1e-3, BaseParms.TR*1e-3];    % seconds
-        delta = BaseParms.deltaMT + BaseParms.B0;        % Hz
-
-        M0 = [1, PSR]';
-        R1 = [R1obs, R1obs]';
-        T2 = [T2a, T2b]';
-
-        [~,Mzn,~] = yarnykh_pulseMT(M0,R1,T2,TRs,kba,BaseParms.pwMT,ts,thetaEX,delta,B1eMT,shapes{L});
-        model_b1 = Mzn(1,:);  
-        model_b2 = Mzn(2,:);
-
-        fig = figure('Visible','off'); set(fig,'Position',[200 200 760 480]);
-        semilogx(rf_offset, M1_med, 'o-'); hold on;
-        semilogx(rf_offset, M2_med, 'o-');
-        semilogx(rf_offset, model_b1, '-');
-        semilogx(rf_offset, model_b2, '-');
-        xlabel('RF offset (Hz)'); ylabel('Normalized signal');
-        ttl = sprintf('%s | Slice %d | %s (%s) | %s', idstr, zz, roi, regUsed, lines{L});
-        title(ttl);
-        lg = {'360° data','820° data','360° Fit','820° Fit'};
-        legend(lg,'Location','best');
-        saveDirID = fullfile(saveDir,idstr);
-        outpng = fullfile(saveDirID, sprintf('%s_slice%02d_%s_%s_FitZ.png', idstr, zz, roi, lines{L}));
-        exportgraphics(fig, outpng); close(fig);
-
-      % Append one row
-      acc(end+1,:) = {fileID, zz, roi, char(regUsed), lines{L}, PSR, kba, T2a, T2b, R1obs}; %#ok<AGROW>
-    end
+    
+      try
+          % ---- Full Fit on ROI-median signals ----
+          [PSR, kba, T2a, T2b, R1obs, chi2, chi2p, ~, resn] = ...
+              Analysis_Yarnykh_Full_Fit(BaseParms, shapes{L});
+    
+          % ---- (optional) forward model + plot ----
+          corrB1 = BaseParms.B1/100;
+          [B1MT,tMT] = philipsRFpulse_FA(BaseParms.MT_flip, BaseParms.pwMT, 'am_sg_100_100_0');
+          B1eMT = CWEqMTPulse(B1MT*corrB1, tMT, BaseParms.pwMT);
+          thetaEX = ([BaseParms.qMTflip BaseParms.qMTflip]*pi/180).*corrB1;
+          ts = 1e-3;
+          TRs = [BaseParms.TR*1e-3, BaseParms.TR*1e-3];      % seconds
+          delta = BaseParms.deltaMT + BaseParms.B0;          % Hz
+    
+          M0 = [1, PSR]';
+          R1 = [R1obs, R1obs]';
+          T2 = [T2a, T2b]';
+    
+          [~,Mzn,~] = yarnykh_pulseMT(M0,R1,T2,TRs,kba,BaseParms.pwMT,ts,thetaEX,delta,B1eMT,shapes{L});
+          model_b1 = Mzn(1,:);  
+          model_b2 = Mzn(2,:);
+    
+          fig = figure('Visible','off'); set(fig,'Position',[200 200 760 480]);
+          semilogx(rf_offset, M1_med, 'o-'); hold on;
+          semilogx(rf_offset, M2_med, 'o-');
+          semilogx(rf_offset, model_b1, '-');
+          semilogx(rf_offset, model_b2, '-');
+          xlabel('RF offset (Hz)'); ylabel('Normalized signal');
+          ttl = sprintf('%s | Slice %d | %s (%s) | %s', idstr, zz, roi, regUsed, lines{L});
+          title(ttl);
+          legend({'360° data','820° data','360° Fit','820° Fit'},'Location','best');
+          saveDirID = fullfile(saveDir,idstr); if ~exist(saveDirID,'dir'), mkdir(saveDirID); end
+          outpng = fullfile(saveDirID, sprintf('%s_slice%02d_%s_%s_FitZ.png', idstr, zz, roi, lines{L}));
+          exportgraphics(fig, outpng); close(fig);
+    
+          % ---- record successful row ----
+          acc(end+1,:) = {fileID, zz, roi, char(regUsed), lines{L}, PSR, kba, T2a, T2b, R1obs, chi2, chi2p, resn}; %#ok<AGROW>
+    
+      catch ME
+          % Only special-case the bad initial point error; otherwise just warn and skip.
+          if contains(ME.message, 'Objective function is returning Inf or NaN values at initial point') ...
+             || contains(ME.message, 'lsqncommon') || contains(ME.message,'lsqnonlin')
+              warning('Fit failed (init Inf/NaN): ID=%s slice=%d ROI=%s L=%s. Skipping.', ...
+                      idstr, zz, roi, lines{L});
+          else
+              warning('Fit failed: ID=%s slice=%d ROI=%s L=%s. %s', ...
+                      idstr, zz, roi, lines{L}, ME.message);
+          end
+          % continue to next lineshape/ROI/slice without crashing
+          continue;
+      end
+    end % Lineshape
   end % ROI
 
   for ii = 1:seg_CT
@@ -212,6 +248,8 @@ for zz = slices(:)'
     B = seg.(name)(:,:,zz);
     if ~isequal(size(A), size(B))
         warning('Size mismatch mFFE vs %s on slice %d (skipping)', name, zz);
+        excludeIDs{end+1} = cF;
+        assignin("base","excludeIDs",excludeIDs);
         continue;
     end
     A = logical(A);
@@ -249,7 +287,7 @@ end % slice
 % --- Write / Append to Excel by lineshape + QC ---
 if ~isempty(acc)
   T = cell2table(acc, 'VariableNames', ...
-      {'ID','Slice','ROI','Reg','Lineshape','PSR','kba','T2a','T2b','R1obs'});
+      {'ID','Slice','ROI','Reg','Lineshape','PSR','kba','T2a','T2b','R1obs','chi2','chi2p','resn'});
   xlsx = fullfile(saveDir, 'FF_MED_DICE_CENTROID.xlsx');
 
   lsheets = {'SL','L','G'};
