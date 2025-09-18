@@ -16,7 +16,6 @@ excludeIDs = exclusions;  % <-- exclusions is generated after running file_check
 d       = dir(upload);
 isSubj  = [d.isdir] & ~ismember({d.name},{'.','..'});
 subjList= {d(isSubj).name};
-mask_overlay(baseDir,subjList,excludeIDs);
 
 for ii = 1:numel(subjList)
     fileID = subjList{ii};
@@ -36,6 +35,7 @@ for ii = 1:numel(subjList)
 
     fullFit(baseDir, saveDir, id);
 end
+combine(baseDir,excludeIDs);
 fprintf('MS OVER');
 
 % === USER SETTINGS ===
@@ -51,7 +51,6 @@ end
 d       = dir(upload);
 isSubj  = [d.isdir] & ~ismember({d.name},{'.','..'});
 subjList= {d(isSubj).name};
-mask_overlay(baseDir,subjList,excludeIDs);
 
 for ii = 1:numel(subjList)
     fileID = subjList{ii};
@@ -71,3 +70,4 @@ for ii = 1:numel(subjList)
 
     fullFit(baseDir, saveDir, id);
 end
+combine(baseDir,excludeIDs);
