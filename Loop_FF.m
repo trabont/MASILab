@@ -11,7 +11,7 @@ if ~exist(saveRoot,'dir')
 end
 
 % IDs you want to skip:
-excludeIDs = fullfile(pwd,'Processed','FullFit_Analysis','exclusions.m');  
+excludeIDs = fullfile(pwd,'Processed','FullFit_Analysis','exclusions.mat');  
 % exclusions is generated after running file_check_all.m
 
 % find all subject folders
