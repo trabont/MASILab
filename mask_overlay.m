@@ -1,5 +1,5 @@
 function mask_overlay(rootDir,subjList,excludeIDs)
-% MASK_OVERLAY Loop through ID folders, find a lymph slice with >10 voxels,
+% MASK_OVERLAY Loop through ID folders, find a lymph slice with >6 voxels,
 % overlay GM/WM/CSF/LYMPH on MT/T2AX images with transparency, and save JPGs.
 %
 %   mask_overlay;                             % uses pwd
@@ -53,7 +53,7 @@ for i = 1:length(subjList)
         
         % --- determine slices to process (based on LYMPH as you had) ---
         sliceSum = squeeze(sum(sum(LYMPH,1),2));
-        slices   = find(sliceSum > 10);
+        slices   = find(sliceSum > 6);
         if isempty(slices)
           warning('Subject %s: no LYMPH mask → skipping', name);
           excludeIDs{end+1} = name;
