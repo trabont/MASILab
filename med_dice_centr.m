@@ -78,7 +78,7 @@ cF = char(sF);
 
 % --- determine slices to process (based on LYMPH as you had) ---
 sliceSum = squeeze(sum(sum(masks.LYMPH,1),2));
-slices   = find(sliceSum > 10);
+slices   = find(sliceSum > 6);
 if isempty(slices)
   warning('Subject %d: no LYMPH mask → skipping', fileID);
   excludeIDs{end+1} = cF;
@@ -153,7 +153,7 @@ for zz = slices(:)'
     % --- gather voxel stacks within ROI ---
     % MT: [Nvox × 16], split into two blocks of 8 (per your acquisition)
     voxIdx = find(mask2D);
-    [X,Y,~] = size(MT); %#ok<ASGLU>
+    [X,Y,~] = size(MT);
 
     % extract MT per voxel (normalize per voxel within each block, then median per offset)
     MTv = reshape(MT, [], size(MT,3));         % [XY × 16]
@@ -223,7 +223,7 @@ for zz = slices(:)'
           exportgraphics(fig, outpng); close(fig);
     
           % ---- record successful row ----
-          acc(end+1,:) = {fileID, zz, roi, char(regUsed), lines{L}, PSR, kba, T2a, T2b, R1obs, chi2, chi2p, resn}; %#ok<AGROW>
+          acc(end+1,:) = {fileID, zz, roi, char(regUsed), lines{L}, PSR, kba, T2a, T2b, R1obs, chi2, chi2p, resn};
     
       catch ME
           % Only special-case the bad initial point error; otherwise just warn and skip.
