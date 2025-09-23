@@ -1,6 +1,6 @@
 function file_checking(baseDir,outDir)
 
-% file_check.m
+% file_checking.m
 % Appends dimensions for MT, B0, B1, T2AX, mFFE, MFA to:
 %   - Sheet "DIMS_SCT"  ( *_registered_*_1.nii.gz )
 %   - Sheet "DIMS_ANTS" ( *_registered_*_ANTS.nii.gz )
