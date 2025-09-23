@@ -2,6 +2,7 @@ clear; clc;
 
 % === USER SETTINGS ===
 baseDir    = fullfile(pwd,'Processed','MS');        % where subject folders live
+msDir = baseDir;
 upload     = fullfile(pwd,'Processed','FullFit_MS');
 saveRoot   = fullfile(pwd,'Processed','FullFit_MS');   % where outputs go
 
@@ -36,11 +37,11 @@ for ii = 1:numel(subjList)
 
     fullFit(baseDir, saveDir, id);
 end
-combine(baseDir,excludeIDs);
 fprintf('MS OVER');
 
 % === USER SETTINGS ===
 baseDir    = fullfile(pwd,'Processed','HC');        % where subject folders live
+hcDir = baseDir;
 upload     = fullfile(pwd,'Processed','FullFit_HC');
 saveRoot   = fullfile(pwd,'Processed','FullFit_HC');   % where outputs go
 
@@ -71,4 +72,6 @@ for ii = 1:numel(subjList)
 
     fullFit(baseDir, saveDir, id);
 end
-combine(baseDir,excludeIDs);
+saveDir = fullfile(pwd,'Processed','FullFit_Analysis');
+fitType = 1;
+combine(msDir,hcDir,excludeIDs,saveDir,fitType)
