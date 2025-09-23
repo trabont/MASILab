@@ -46,52 +46,25 @@ nfs/masi/trabont/Lymph
       ├ /#
 
     ├ /FullFit_HC
-      ├ All_tissue.mat
-      ├ All_SL_*.mat
-      ├ All_L_*.mat
-      ├ All_G_*.mat
-      ├ All_SL_**_MAP.png
-      ├ All_L_**_MAP.png
-      ├ All_G_**_MAP.png
+      ├ FILE_CHECK.xlsx
+      ├ FF_MED_DICE_CENTROID.xlsx
       ├ /#
+          ├ ##_slice###_*_***_FitZ.png
 
     ├ /FullFit_MS
-      ├ All_tissue.mat
-      ├ All_SL_*.mat
-      ├ All_L_*.mat
-      ├ All_G_*.mat
-      ├ All_SL_**_MAP.png
-      ├ All_L_**_MAP.png
-      ├ All_G_**_MAP.png
+      ├ FILE_CHECK.xlsx
+      ├ FF_MED_DICE_CENTROID.xlsx
       ├ /#
+          ├ ##_slice###_*_***_FitZ.png
 
     ├ SinglePT_HC
-      ├ All_tissue.mat
-      ├ All_SL_*.mat
-      ├ All_L_*.mat
-      ├ All_G_*.mat
-      ├ All_SL_**_MAP.png
-      ├ All_L_**_MAP.png
-      ├ All_G_**_MAP.png
       ├ /#
 
     ├ SinglePT_MS
-      ├ All_tissue.mat
-      ├ All_SL_*.mat
-      ├ All_L_*.mat
-      ├ All_G_*.mat
-      ├ All_SL_**_MAP.png
-      ├ All_L_**_MAP.png
-      ├ All_G_**_MAP.png
       ├ /#
 
     ├ /FullFit_Analysis
-      ├ Whisker_OUTLINE_**_***.png
-      ├ Whisker_PTS_**_***.png
-      ├ Box_**.png
-      ├ ***_*_**_Hist.png
-      ├ bin_widths_data_span.tsv
-      ├ fit_metric_bounds.tsv
+      ├ exclusions.mat
       ├ /#
 
 ├ /functions
@@ -131,10 +104,10 @@ nfs/masi/trabont/Lymph
   
 * [`MS_List`](./MS_List.txt) and [`HC_List`](./HC_List.txt) each contain the list of subject identification numbers found in **SMITH** / **SMITH\_HC** in XNAT.
   
-* [`file_check_all.m`](./file_check_all.m) will check registered file details and generate a subject exclusion list (files missing). All outputs from file_check_all.m **should be reviewed _before_ running Loop_FF.m**.
+* [`file_check_all.m`](./file_check_all.m) will check registered file details and generate a subject exclusion .mat (files missing + lymph masks too small + lymph masks on bad slices). All outputs from file_check_all.m **should be reviewed _before_ running Loop_FF.m**.
     - Calls [`maskOverlay.m`](./maskOverlay.m)
       - produces+saves images of ROI masks on MT and T2 images in <ins>/MaskOverlays/#_maskOverlay.jpg'</ins>
-          - Note: this will only produce one overlay per subject
+          - Note: this will produce one overlay per lymph masked slice for each subject
     - Calls [`file_checking.m`](./file_checking.m)
       - produces registered subject file dimensions ('NA' if file does not exist) in <ins>'FILE_CHECK.xlsx'</ins>
     - Calls [`med_dice_centr.m`](./med_dice_centr.m)
@@ -150,7 +123,7 @@ nfs/masi/trabont/Lymph
     - Calls [`fullFit.m`](./fullFit.m) and [`singlePTFit.m`](./singlePTFit.m)
       - produces each subject's parameter maps (.mat) for designated slices using fit designated functions (see /functions)
     - Calls [`combine.m`](./combine.m)
-      - produces a combined parameter
+      - produces a combined parameter .mat file
       - produces a parameter subplot figure of all subject-slices for each parameter for each group
         
 * [`FF_Analysis.m`](./FF_Analysis.m) and [`SP_Analysis.m`](./SP_Analysis.m) will create Excel files and figures necessary to analyze fit results. 
