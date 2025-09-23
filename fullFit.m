@@ -91,7 +91,6 @@ addpath("functions/")
 
   lines  = {'SL','L','G'};
   shapes = {'super-lorentzian','lorentzian','gaussian'};
-  total_PSR_map = zeros(256,256,3);
 
   %--- Loop over slices ---
   for zz = slices'
@@ -125,6 +124,9 @@ addpath("functions/")
         T2a_map   = zeros(X,Y);
         T2b_map   = zeros(X,Y);
         R1obs_map = zeros(X,Y);
+        chi2_map   = zeros(X,Y);
+        chi2p_map   = zeros(X,Y);
+        resn_map = zeros(X,Y);
 
         fprintf('Subject %d slice %d → %s on %s\n', fileID, zz, shapes{L}, roiNames{R});
         for i = 1:X % loop through x coordinates
@@ -140,13 +142,16 @@ addpath("functions/")
               Parms.B0    = B02D(i,j,vz);
               Parms.Ernst = squeeze(MFA2D(i,j,1:Parms.MFA,vz))';
               % Full-fit
-              [PSR, kba, T2a, T2b, R1obs] = Analysis_Yarnykh_Full_Fit(Parms,shapes{L});
+              [PSR,kba,T2a,T2b,R1obs,chi2,chi2p,~,resn] = Analysis_Yarnykh_Full_Fit(Parms,shapes{L});
               % Add voxel values to maps at coordinate location
               PSR_map(i,j)   = PSR;
               kba_map(i,j)   = kba;
               T2a_map(i,j)   = T2a;
               T2b_map(i,j)   = T2b;
               R1obs_map(i,j) = R1obs;
+              chi2_map(i,j)  = chi2;
+              chi2p_map(i,j) = chi2p;
+              resn_map(i,j)  = resn;
             end % mask loop
           end % y-coord loop
         end % x-coord loop
@@ -154,8 +159,7 @@ addpath("functions/")
         %--- Save matrices ---
         % Saving the maps for each slice x lineshape x tissue
         outname = fullfile(saveDir, sprintf('%d_slice%02d_%s_%s.mat', fileID, zz, lines{L}, roiNames{R}));
-        save(outname, 'PSR_map', 'kba_map', 'T2a_map', 'T2b_map', 'R1obs_map');
-        total_PSR_map(:,:,L) = total_PSR_map(:,:,L) + PSR_map; % Creating one PSR map with all tissues, seperated by lineshape
+        save(outname, 'PSR_map', 'kba_map', 'T2a_map', 'T2b_map', 'R1obs_map','chi2_map','chi2p_map','resn_map');
       end % tissue loop
     end % lineshape loop
 
@@ -176,29 +180,5 @@ addpath("functions/")
     end
     exportgraphics(fig1, fullfile(saveDir, sprintf('%d_slice%02d_MTdynamics.png', fileID, zz)));
     close(fig1);
-
-    %--- PSR overlay (wrapped) ---
-    base = mat2gray(MT2D(:,:,scan+1));
-    cmap = jet(256);
-    alpha = 0.6;
-    PSR_LYM = total_PSR_map(:,:,1);              % using the combined PSR map (1 = super-lorent)
-    vals = PSR_LYM(PSR_LYM>0);
-    psr_norm = (PSR_LYM-min(vals))/(max(vals)-min(vals));
-    rgb = ind2rgb(uint8(psr_norm*255),cmap);
-    overlay = repmat(base,1,1,3);
-    mask2  = PSR_LYM>0;
-    for c=1:3
-  	tmp   = overlay(:,:,c);
-     	rgb_c = rgb(:,:,c);                       % extract channel c
-     	tmp(mask2) = (1-alpha)*tmp(mask2) ...     % only index the masked pixels
-              + alpha*rgb_c(mask2);
-  	overlay(:,:,c) = tmp;
-    end
-
-    fig2 = figure('Visible','off');
-    imshow(overlay);
-    exportgraphics(fig2, fullfile(saveDir, sprintf('%d_slice%02d_PSR_overlay.png',fileID,zz)));
-    close(fig2);
-
   end
 end
