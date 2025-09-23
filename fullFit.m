@@ -13,7 +13,7 @@ function fullFit(baseDir, saveDir, fileID)
 % (2) Retieve masks: WM, GM, CSF, and Lymph Node
 % (3) Perform Yarnykh Full Fit Analysis
 % (4) Produce and save the maps: PSR, R1Obs, kba, etc.
-% (5) Produce and save images: PSR overlay, Frequency Offset Figure
+% (5) Produce and save Frequency Offset Figure
 % -------
 
 % Ensure saveDir exists
