@@ -10,7 +10,8 @@ if ~exist(saveRoot,'dir')
 end
 
 % IDs you want to skip:
-excludeIDs = exclusions;  % <-- exclusions is generated after running file_check_all.m
+excludeIDs = fullfile(pwd,'Processed','FullFit_Analysis','exclusions.m');  
+% exclusions is generated after running file_check_all.m
 
 % find all subject folders
 d       = dir(upload);
