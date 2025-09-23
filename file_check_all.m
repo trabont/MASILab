@@ -12,6 +12,7 @@
 %       (4) Produce all ROI mask overlays for slices with lymph ROI present
 %           using the exclusion list to skip subjects with bad dimensions
 %       (5) Produce med_dice_centr excel sheets and figures
+%       (6) Produce and save 'exclusions.mat'
 % ------------------
 
 clear; clc;
@@ -122,5 +123,9 @@ for ii = 1:numel(subjList)
     end
 end
 
-
 exclusions = unique([excludeIDs_MS,excludeIDs]);
+
+exSave = fullfile(pwd,'Processed','FullFit_Analysis');
+mkdir(exSave);
+outname = fullfile(pwd,'Processed','FullFit_Analysis', sprintf('exclusions.mat'));
+save(outname, 'exclusions');
